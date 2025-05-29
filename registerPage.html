@@ -84,7 +84,16 @@
 		<section class = "main">
 			<div class = "background_image">
 				<div class = "space"></div>
-				<div class = "login_panel">
+				<div class = "register_panel">
+					<p class="user_input">
+						<label for="first_name_input">First Name: </label>
+						<input id="first_name_input" class="user_input" type="text">
+					</p>
+
+					<p class="user_input">
+        					<label for="last_name_input">Last Name: </label>
+        					<input id="last_name_input" class="user_input" type="text">
+    					</p>
 					<p class = "user_input">
 						<label for = "username_input">Username: </label>
 						<input id = "username_input" class = "user_input" type = "text">
@@ -93,22 +102,22 @@
 						<label for = "password_input">Password: </label>
 						<input id = "password_input" class = "user_input" type = "password">
 					</p>
-					<input id = "login_button" class = "user_input" type = "button" value = "Login">
-					<input id = "register_button" class = "user_input" type = "button" value = "Signup">
+					<input id = "register_button" class = "user_input" type = "button" value = "Register">
 				</div>
 			</div>
 		</section> 
 <script>
-document.getElementById("login_button").addEventListener("click", function () {
+document.getElementById("register_button").addEventListener("click", function () {
 	const username = document.getElementById("username_input").value;
 	const password = document.getElementById("password_input").value;
+	
 
 	const payload = {
 		login: username,
 		password: password
 	};
 
-	fetch("LAMPAPI/Login.php", {
+	fetch("LAMPAPI/Register.php", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json"
@@ -125,9 +134,7 @@ document.getElementById("login_button").addEventListener("click", function () {
 			// Redirect to main page
 			window.location.href = "mainpage.html";
 		} else {
-			// Optionally display an error on the page
 			console.log("Login failed:", data.error);
-			// Example: document.getElementById("error_message").textContent = "Invalid credentials.";
 		}
 	})
 	.catch(error => {
