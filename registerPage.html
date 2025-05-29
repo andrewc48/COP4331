@@ -105,43 +105,44 @@
 					<input id = "register_button" class = "user_input" type = "button" value = "Register">
 				</div>
 			</div>
-		</section> 
-<script>
+		</section>
+		<script>
 document.getElementById("register_button").addEventListener("click", function () {
-	const username = document.getElementById("username_input").value;
-	const password = document.getElementById("password_input").value;
-	
+    const username = document.getElementById("username_input").value;
+    const password = document.getElementById("password_input").value;
+    const firstName = document.getElementById("first_name_input").value;
+    const lastName = document.getElementById("last_name_input").value;
 
-	const payload = {
-		login: username,
-		password: password
-	};
+    const payload = {
+        login: username,
+        password: password,
+        firstName: firstName,
+        lastName: lastName
+    };
 
-	fetch("LAMPAPI/Register.php", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify(payload)
-	})
-	.then(response => response.json())
-	.then(data => {
-		if (data.error === "") {
-			// Store user data if needed
-			localStorage.setItem("userId", data.id);
-			localStorage.setItem("firstName", data.firstName);
-			localStorage.setItem("lastName", data.lastName);
-			// Redirect to main page
-			window.location.href = "mainpage.html";
-		} else {
-			console.log("Login failed:", data.error);
-		}
-	})
-	.catch(error => {
-		console.error("Error:", error);
-	});
+    fetch("LAMPAPI/Register.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error === "") {
+            localStorage.setItem("userId", data.id);
+            localStorage.setItem("firstName", data.firstName);
+            localStorage.setItem("lastName", data.lastName);
+            window.location.href = "mainpage.html";
+        } else {
+            console.log("Register failed:", data.error);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
 });
 </script>
-
+ 
 	</body>
 </html>
