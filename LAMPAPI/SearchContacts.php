@@ -18,9 +18,21 @@
 	} 
 	else
 	{
-		$stmt = $conn->prepare("select firstName,lastName,Phone, Email from Contacts where (firstName like ? or lastName LIKE ?) and UserID=?");
-		$Name = "%" . $inData["search"] . "%";
-		$stmt->bind_param("sss",$Name, $Name, $inData["userId"]);
+		$trimmedSearch = isset($inData["search"]) ? trim($inData["search"]) : "";
+
+		if (empty($trimmedSearch))
+		{
+			// Search term is empty or whitespace, fetch all contacts for the user
+			$stmt = $conn->prepare("select firstName,lastName,Phone, Email from Contacts where UserID=?");
+			$stmt->bind_param("s", $inData["userId"]);
+		}
+		else
+		{
+			// Search term is provided, use existing logic
+			$stmt = $conn->prepare("select firstName,lastName,Phone, Email from Contacts where (firstName like ? or lastName LIKE ?) and UserID=?");
+			$Name = "%" . $trimmedSearch . "%";
+			$stmt->bind_param("sss", $Name, $Name, $inData["userId"]);
+		}
 		$stmt->execute();
 		
 		$result = $stmt->get_result();
