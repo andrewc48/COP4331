@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>COP4331 - Contacts</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Additional styles for contacts page */
+        .crud-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        .crud-table th, .crud-table td {
+            border: 1px solid #ddd;
+            padding: 0.75em;
+            text-align: left;
+        }
+        .crud-table th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .crud-table input[type="text"], .crud-table input[type="email"], .crud-table input[type="tel"] {
+            width: 95%;
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .crud-table .action-icons span {
+            cursor: pointer;
+            margin-right: 0.5em;
+            font-size: 1.2em;
+        }
+        .add-contact-btn {
+            padding: 0.6em 1em;
+            background-color: #28a745; /* Green */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .add-contact-btn:hover {
+            background-color: #218838;
+        }
+        #contact_message {
+            margin-top: 1em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Group 19's Contact List</h1>
+        <div id="user-info" class="user-info"></div>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="contacts.html" class="active">Contacts</a>
+        <a href="#logout" id="logout_button">Logout</a> 
+    </nav>
+
+    <div class="container">
+        <h2>Manage Contacts</h2>
+        
+        <table class="crud-table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" id="new_firstName" placeholder="First Name"></td>
+                    <td><input type="text" id="new_lastName" placeholder="Last Name"></td>
+                    <td><input type="tel" id="new_phone" placeholder="Phone"></td>
+                    <td><input type="email" id="new_email" placeholder="Email"></td>
+                    <td><button id="add_contact_button" class="add-contact-btn">Add</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <p id="contact_message"></p>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Group 19 - COP4331</p>
+    </footer>
+
+    <script src="js/contacts.js"></script>
+    <script>
+        // Shared script for user info and logout
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInfo = document.getElementById('user-info');
+            const username = localStorage.getItem('username');
+            const userId = localStorage.getItem('userId');
+
+            if (username && userId) {
+                userInfo.textContent = 'Logged in as: ' + username;
+            } else {
+                window.location.href = 'login.html';
+            }
+
+            const logoutButton = document.getElementById('logout_button');
+            if(logoutButton) {
+                logoutButton.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    localStorage.removeItem('userId');
+                    localStorage.removeItem('firstName');
+                    localStorage.removeItem('lastName');
+                    localStorage.removeItem('username');
+                    window.location.href = 'login.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
