@@ -111,6 +111,9 @@ nav a:hover, nav a.active {
     text-align: right;
     padding: 1em;
     font-weight: bold;
+    position: absolute;
+    right: 10px;
+    top: 25px;
 }
 
 footer {
