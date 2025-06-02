@@ -2,31 +2,43 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>COP4331 - Welcome</title>
+		<title>COP4331 - Login</title>
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 
 	<body>
 		<header>
-			<h1>Welcome to Group 19's Contact List Application</h1>
+			<h1>Group 19's Contact List - Login</h1>
 			<div id="user-info" class="user-info" style="display: none;"></div>
 		</header>
 
 		<nav>
-			<a href="index.html" class="active">Home</a>
-			<a href="login.html">Login</a>
+			<a href="index.html">Home</a>
+			<a href="login.html" class="active">Login</a>
 			<a href="register.html">Register</a>
 		</nav>
 
-		<div class="container">
-			<p>This is the main content area for the homepage. Users can see this page whether they are logged in or not.</p>
-			<p>Further content can be added here.</p>
+		<div class="form-container">
+			<h2>Login</h2>
+			<div class="form-group">
+				<label for="username_input">Username:</label>
+				<input id="username_input" type="text" required>
+			</div>
+			<div class="form-group">
+				<label for="password_input">Password:</label>
+				<input id="password_input" type="password" required>
+			</div>
+			<div class="form-group">
+				<input id="login_button" type="button" value="Login">
+			</div>
+			<p id="login_message"></p>
 		</div>
 
 		<footer>
 			<p>&copy; 2024 Group 19 - COP4331</p>
 		</footer>
 
+		<script src="js/login.js"></script>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {
 				const userInfo = document.getElementById('user-info');

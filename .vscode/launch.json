@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Open index.html in Chrome",
+        "type": "chrome",
+        "request": "launch",
+        "url": "http://localhost:5500/index.html",
+        "webRoot": "${workspaceFolder}",      // lets VS Code map breakpoints to your files
+        "sourceMaps": true,                   // optional, for transpiled code
+        "trace": false                        // set true if you need verbose logs
+      }
+    ]
+  }
+  

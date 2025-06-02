@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>COP4331 - Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Group 19's Contact List</h1>
+        <div id="user-info" class="user-info"></div>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="#contacts">Contacts</a> <!-- Placeholder for contacts page -->
+        <a href="#logout" id="logout_button">Logout</a> 
+    </nav>
+
+    <div class="container">
+        <h2>Welcome to your Dashboard!</h2>
+        <p>This is your personalized home page. From here you can manage your contacts and account settings.</p>
+        <!-- Additional content for the home page can be added here -->
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Group 19 - COP4331</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const userInfo = document.getElementById('user-info');
+            const username = localStorage.getItem('username');
+
+            if (username) {
+                userInfo.textContent = 'Logged in as: ' + username;
+            } else {
+                // If no username is found, redirect to login page
+                window.location.href = 'login.html';
+            }
+
+            const logoutButton = document.getElementById('logout_button');
+            logoutButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default anchor behavior
+                localStorage.removeItem('userId');
+                localStorage.removeItem('firstName');
+                localStorage.removeItem('lastName');
+                localStorage.removeItem('username');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html> 
