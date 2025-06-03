@@ -42,7 +42,7 @@
 				$searchResults .= ",";
 			}
 			$searchCount++;
-			$searchResults .= '{"id":"' . $row["id"] . '","firstName":"' . $row["firstName"] . '","lastName":"' . $row["lastName"] . '","Phone":"' . $row["Phone"] . '","Email":"' . $row["Email"] . '"}';
+			$searchResults .= '{"id":' . $row["id"] . ',"firstName":"' . $row["firstName"] . '","lastName":"' . $row["lastName"] . '","Phone":"' . $row["Phone"] . '","Email":"' . $row["Email"] . '"}';
 
 		}
 		
