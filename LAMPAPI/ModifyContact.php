@@ -17,17 +17,45 @@
 	$conn = new mysqli("localhost", "TheBeast", "WeLoveCOP4331", "COP4331");
 	if ($conn->connect_error)
 	{
-		returnWithError( $conn->connect_error );
+		returnWithError( "Connection failed: " . $conn->connect_error );
 	}
-
 	else
 	{
-		$stmt = $conn->prepare("UPDATE Contacts SET FirstName = ? , LastName = ?, Phone = ?,Email = ? WHERE ID = ?");
-		$stmt->bind_param("ssssi", $firstName, $lastName,$phone,$email,$contactId);
-		$stmt->execute();
+		$stmt = $conn->prepare("UPDATE Contacts SET FirstName = ?, LastName = ?, Phone = ?, Email = ? WHERE ID = ?");
+		
+		if ($stmt === false) {
+			returnWithError("Prepare failed: " . $conn->error);
+			$conn->close();
+			exit();
+		}
+
+		$bindResult = $stmt->bind_param("ssssi", $firstName, $lastName, $phone, $email, $contactId);
+		
+		if ($bindResult === false) {
+			returnWithError("Bind_param failed: " . $stmt->error);
+			$stmt->close();
+			$conn->close();
+			exit();
+		}
+
+		if ($stmt->execute())
+		{
+			if ($stmt->affected_rows > 0)
+			{
+				returnWithError(""); 
+			}
+			else
+			{
+				returnWithError("No changes made. Contact ID may not exist, or data was identical to existing record.");
+			}
+		}
+		else
+		{
+			returnWithError("Execute failed: " . $stmt->error);
+		}
+
 		$stmt->close();
 		$conn->close();
-		returnWithError("");
 	}
 
 	function getRequestInfo()
