@@ -22,14 +22,12 @@
 
 		if (empty($trimmedSearch))
 		{
-			// Search term is empty or whitespace, fetch all contacts for the user
-			$stmt = $conn->prepare("select firstName,lastName,Phone, Email from Contacts where UserID=?");
+			$stmt = $conn->prepare("select id, firstName,lastName,Phone, Email from Contacts where UserID=?");
 			$stmt->bind_param("s", $inData["userId"]);
 		}
 		else
 		{
-			// Search term is provided, use existing logic
-			$stmt = $conn->prepare("select firstName,lastName,Phone, Email from Contacts where (firstName like ? or lastName LIKE ?) and UserID=?");
+			$stmt = $conn->prepare("select id, firstName,lastName,Phone, Email from Contacts where (firstName like ? or lastName LIKE ?) and UserID=?");
 			$Name = "%" . $trimmedSearch . "%";
 			$stmt->bind_param("sss", $Name, $Name, $inData["userId"]);
 		}
@@ -44,7 +42,7 @@
 				$searchResults .= ",";
 			}
 			$searchCount++;
-			$searchResults .= '{"firstName":"' . $row["firstName"] . '","lastName":"' . $row["lastName"] . '","Phone":"' . $row["Phone"] . '","Email":"' . $row["Email"] . '"}';
+			$searchResults .= '{"id":"' . $row["id"] . '","firstName":"' . $row["firstName"] . '","lastName":"' . $row["lastName"] . '","Phone":"' . $row["Phone"] . '","Email":"' . $row["Email"] . '"}';
 
 		}
 		

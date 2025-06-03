@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const email = inputs.emailInput.value.trim();
 
         const payload = {
-            contactId: originalContactData.ID, 
+            contactId: originalContactData.id, 
             userId: userId,
             firstName: firstName,
             lastName: lastName,
