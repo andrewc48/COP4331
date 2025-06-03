@@ -23,11 +23,26 @@
 	else
 	{
 		$stmt = $conn->prepare("INSERT into Contacts (FirstName, LastName, Phone,Email, UserID ) VALUES(?,?,?,?,?)");
-		$stmt->bind_param("ssssi", $firstName, $lastName,$phone,$email,$userID);
+		$stmt->bind_param("ssssi", $firstName, $lastName,$phone,$email,$userId);
 		$stmt->execute();
+
+		if ($stmt->affected_rows < 1)
+		{
+			$errorMsg = "Failed to add contact. Details: " . 
+						"FirstName: " . $firstName . ", " .
+						"LastName: " . $lastName . ", " .
+						"Phone: " . $phone . ", " .
+						"Email: " . $email . ", " .
+						"UserID: " . $userId;
+			returnWithError($errorMsg);
+		}
+		else
+		{
+			returnWithError("");
+		}
+		
 		$stmt->close();
 		$conn->close();
-		returnWithError("");
 	}
 
 	function getRequestInfo()
