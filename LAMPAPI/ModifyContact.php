@@ -46,7 +46,7 @@
 			}
 			else
 			{
-				$debug_message = sprintf("No changes made. Contact ID (%s) may not exist, or data was identical. Submitted: Name: %s %s, Phone: %s, Email: %s",
+				$debug_message = sprintf("No changes made. Contact ID (%d) may not exist, or data was identical. Submitted: Name: %s %s, Phone: %s, Email: %s",
 					$contactId, $firstName, $lastName, $phone, $email
 				);
 				returnWithError($debug_message);
