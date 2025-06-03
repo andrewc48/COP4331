@@ -31,9 +31,10 @@
 			document.addEventListener('DOMContentLoaded', function() {
 				const userInfo = document.getElementById('user-info');
 				const username = localStorage.getItem('username');
-				if (username) {
-					userInfo.textContent = 'Logged in as: ' + username;
-					userInfo.style.display = 'block';
+				const userId = localStorage.getItem('userId');
+
+				if (username && userId) {
+					window.location.href = 'home.html';
 				}
 			});
 		</script>

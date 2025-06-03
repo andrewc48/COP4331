@@ -18,21 +18,17 @@ document.getElementById("login_button").addEventListener("click", function () {
 	.then(response => response.json())
 	.then(data => {
 		if (data.error === "") {
-			// Store user data if needed
 			localStorage.setItem("userId", data.id);
 			localStorage.setItem("firstName", data.firstName);
 			localStorage.setItem("lastName", data.lastName);
-			localStorage.setItem("username", username); // Store username
-			// Redirect to main page
+			localStorage.setItem("username", username);
 			window.location.href = "home.html";
 		} else {
-			// Optionally display an error on the page
 			loginMessage.textContent = "Login failed: " + data.error;
 			console.log("Login failed:", data.error);
 		}
 	})
 	.catch(error => {
-		// Optionally display an error on the page
 		loginMessage.textContent = "Error during login. Please try again.";
 		console.error("Error:", error);
 	});
