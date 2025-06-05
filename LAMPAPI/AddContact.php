@@ -1,5 +1,5 @@
 <?php
-	header("Access-Control-Allow-Origin: http://localhost:5500");
+	header("Access-Control-Allow-Origin: http://www.cop4331-summer25-g19.org");
 	header("Access-Control-Allow-Headers: Content-Type");
 	header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 	if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
