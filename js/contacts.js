@@ -18,13 +18,255 @@ document.addEventListener('DOMContentLoaded', function() {
     let editingContactRowElement = null;
     let originalContactData = null;
 
+    let fishTankContainer;
+    let activeFish = {}; // { contactId: { element, nameElement, svgElement, x, y, targetX, targetY, speed, isExiting, facingRight } }
+    const FISH_DIMENSION = 50;
+    const FISH_COLORS = ["gold", "orange", "lightcoral", "deepskyblue", "lightgreen", "violet", "wheat"];
+
+    function createFishSvgElement() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(svgNS, "svg");
+        svg.setAttribute("width", "50");
+        svg.setAttribute("height", "50");
+        svg.setAttribute("viewBox", "0 0 800 800");
+        svg.setAttribute("fill", "none");
+
+        const randomColor = FISH_COLORS[Math.floor(Math.random() * FISH_COLORS.length)];
+
+        const path1 = document.createElementNS(svgNS, "path");
+        path1.setAttribute("d", "M271.776 403.112C272.634 402.254 273.492 401.396 284.019 396.233C294.545 391.071 314.714 381.63 333.471 374.407C352.229 367.183 368.965 362.463 379.946 359.817C395.501 356.069 402.228 355.87 412.768 354.576C421.567 353.496 437.468 352.424 452.728 350.259C482.303 346.063 498.884 341.137 504.71 339.408C513.335 336.847 529.144 336.365 551.185 339.362C577.789 342.98 590.781 358.887 595.956 361.91C604.11 366.674 613.732 371.436 619.584 377.281C621.796 379.49 621.573 380.98 618.999 383.36C605.9 395.466 599.493 397.469 592.569 398.769C573.682 402.316 564.357 414.79 559.826 416.76C557.567 417.741 547.557 426.454 521.868 439.854C506.891 447.667 486.31 454.113 475.061 457.656C462.344 461.662 454.321 459.899 437.065 462.038C425.817 464.607 409.51 470.185 399.822 473.059C390.135 475.933 387.56 475.933 384.907 475.933");
+        path1.setAttribute("stroke", randomColor);
+        path1.setAttribute("stroke-width", "190");
+        path1.setAttribute("stroke-linecap", "round");
+        svg.appendChild(path1);
+
+        const path2 = document.createElementNS(svgNS, "path");
+        path2.setAttribute("d", "M66.6667 500C127.778 411.11 293.333 233.333 466.667 233.333C497.42 233.333 525.13 236.831 550 242.895M550 242.895C665.317 271.011 733.333 400 733.333 400C733.333 400 665.317 528.99 550 557.107M550 242.895C470 370.543 516.667 505.557 550 557.107M66.6667 300C127.778 388.89 293.333 566.667 466.667 566.667C497.42 566.667 525.13 563.17 550 557.107M400 350C383.333 366.667 360 410 400 450");
+        path2.setAttribute("stroke", randomColor);
+        path2.setAttribute("stroke-width", "66.6667");
+        path2.setAttribute("stroke-linecap", "round");
+        svg.appendChild(path2);
+
+        const circle = document.createElementNS(svgNS, "circle");
+        circle.setAttribute("cx", "599.5");
+        circle.setAttribute("cy", "359.5");
+        circle.setAttribute("r", "47.5");
+        circle.setAttribute("fill", "black");
+        svg.appendChild(circle);
+
+        return svg;
+    }
+
+    function initFishTank() {
+        fishTankContainer = document.getElementById('fish-tank-container');
+        if (!fishTankContainer) {
+            console.warn("Fish tank container not found.");
+            return;
+        }
+        setInterval(updateAllFishPositions, 70);
+    }
+
+    function addOrUpdateFish(contact) {
+        if (!fishTankContainer || !contact.id) return;
+
+        let fishData = activeFish[contact.id];
+
+        if (fishData) {
+            if (fishData.nameElement.textContent !== contact.firstName) {
+                fishData.nameElement.textContent = contact.firstName;
+            }
+            if (fishData.isExiting) {
+                fishData.isExiting = false;
+                fishData.speed = 0.8 + Math.random() * 1.2;
+                const tankWidth = fishTankContainer.clientWidth;
+                const tankHeight = fishTankContainer.clientHeight;
+                fishData.targetX = Math.random() * (tankWidth - FISH_DIMENSION);
+                fishData.targetY = Math.random() * (tankHeight - FISH_DIMENSION);
+            }
+            return; 
+        }
+
+        const fishWrapper = document.createElement('div');
+        fishWrapper.className = 'fish-wrapper';
+
+        const svgElement = createFishSvgElement();
+        const nameElement = document.createElement('p');
+        nameElement.textContent = contact.firstName;
+
+        fishWrapper.appendChild(svgElement);
+        fishWrapper.appendChild(nameElement);
+        fishTankContainer.appendChild(fishWrapper);
+
+        const tankWidth = fishTankContainer.clientWidth;
+        const tankHeight = fishTankContainer.clientHeight;
+
+        const spawnSide = Math.floor(Math.random() * 4);
+        let initialX, initialY;
+        let initialFacingRight = true;
+
+        switch (spawnSide) {
+            case 0:
+                initialX = -FISH_DIMENSION; 
+                initialY = Math.random() * (tankHeight - FISH_DIMENSION);
+                initialFacingRight = true;
+                break;
+            case 1:
+                initialX = tankWidth + FISH_DIMENSION / 2;
+                initialY = Math.random() * (tankHeight - FISH_DIMENSION);
+                initialFacingRight = false;
+                break;
+            case 2: 
+                initialX = Math.random() * (tankWidth - FISH_DIMENSION);
+                initialY = -FISH_DIMENSION;
+                initialFacingRight = Math.random() < 0.5;
+                break;
+            case 3: 
+                initialX = Math.random() * (tankWidth - FISH_DIMENSION);
+                initialY = tankHeight + FISH_DIMENSION / 2;
+                initialFacingRight = Math.random() < 0.5;
+                break;
+        }
+
+        fishData = {
+            element: fishWrapper,
+            nameElement: nameElement,
+            svgElement: svgElement,
+            x: initialX,
+            y: initialY,
+            targetX: Math.random() * (tankWidth - FISH_DIMENSION),
+            targetY: Math.random() * (tankHeight - FISH_DIMENSION),
+            speed: 0.8 + Math.random() * 1.2, 
+            isExiting: false,
+            facingRight: initialFacingRight
+        };
+        activeFish[contact.id] = fishData;
+        applyFishPosition(fishData); 
+    }
+
+    function markFishForRemoval(contactId) {
+        if (!fishTankContainer || !activeFish[contactId]) return;
+
+        const fishData = activeFish[contactId];
+        if (fishData.isExiting) return; // Already exiting
+
+        fishData.isExiting = true;
+        fishData.speed *= 1.5; // Increase speed by 1.5x
+
+        const tankWidth = fishTankContainer.clientWidth;
+        const tankHeight = fishTankContainer.clientHeight;
+
+        // Current position
+        const currentX = fishData.x;
+        const currentY = fishData.y;
+
+        const distToLeft = currentX + FISH_DIMENSION;
+        const distToRight = tankWidth - currentX;
+        const distToTop = currentY + FISH_DIMENSION;
+        const distToBottom = tankHeight - currentY;
+
+        let minDist = distToLeft;
+        let exitDirection = 'left';
+
+        if (distToRight < minDist) {
+            minDist = distToRight;
+            exitDirection = 'right';
+        }
+        if (distToTop < minDist) {
+            minDist = distToTop;
+            exitDirection = 'top';
+        }
+        if (distToBottom < minDist) {
+            minDist = distToBottom;
+            exitDirection = 'bottom';
+        }
+
+        switch (exitDirection) {
+            case 'left':
+                fishData.targetX = -FISH_DIMENSION * 2;
+                fishData.targetY = currentY;
+                fishData.facingRight = false;
+                break;
+            case 'right':
+                fishData.targetX = tankWidth + FISH_DIMENSION;
+                fishData.targetY = currentY;
+                fishData.facingRight = true;
+                break;
+            case 'top':
+                fishData.targetX = currentX;
+                fishData.targetY = -FISH_DIMENSION * 2;
+                break;
+            case 'bottom':
+                fishData.targetX = currentX;
+                fishData.targetY = tankHeight + FISH_DIMENSION;
+                break;
+        }
+    }
+
+    function applyFishPosition(fishData) {
+        fishData.element.style.left = fishData.x + 'px';
+        fishData.element.style.top = fishData.y + 'px';
+        const scaleX = fishData.facingRight ? 1 : -1;
+        fishData.svgElement.style.transform = `scaleX(${scaleX})`;
+    }
+
+    function updateAllFishPositions() {
+        if (!fishTankContainer || fishTankContainer.clientWidth === 0) return;
+        const tankWidth = fishTankContainer.clientWidth;
+        const tankHeight = fishTankContainer.clientHeight;
+
+        for (const id in activeFish) {
+            const fish = activeFish[id];
+            const dx = fish.targetX - fish.x;
+            const dy = fish.targetY - fish.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < fish.speed * 2.5) {
+                if (fish.isExiting) {
+                    if (fish.x >= tankWidth + FISH_DIMENSION ||        // Exited right
+                        fish.x < -FISH_DIMENSION * 2 ||        // Exited left
+                        fish.y >= tankHeight + FISH_DIMENSION ||     // Exited bottom
+                        fish.y < -FISH_DIMENSION * 2) {       // Exited top
+                        fish.element.remove();
+                        delete activeFish[id];
+                        continue; 
+                    }
+                } else {
+                    fish.targetX = Math.random() * (tankWidth - FISH_DIMENSION);
+                    fish.targetY = Math.random() * (tankHeight - FISH_DIMENSION);
+                }
+            } else {
+                fish.x += (dx / distance) * fish.speed;
+                fish.y += (dy / distance) * fish.speed;
+            }
+
+            if (!fish.isExiting) {
+                 if (dx > 0 && !fish.facingRight) {
+                    fish.facingRight = true;
+                } else if (dx < 0 && fish.facingRight) {
+                    fish.facingRight = false;
+                }
+                if (fish.x < 0) { fish.x = 0; fish.targetX = Math.random() * (tankWidth - FISH_DIMENSION); fish.facingRight = true; }
+                if (fish.x > tankWidth - FISH_DIMENSION) { fish.x = tankWidth - FISH_DIMENSION; fish.targetX = Math.random() * (tankWidth - FISH_DIMENSION); fish.facingRight = false;}
+                if (fish.y < 0) { fish.y = 0; fish.targetY = Math.random() * (tankHeight - FISH_DIMENSION); }
+                if (fish.y > tankHeight - FISH_DIMENSION) { fish.y = tankHeight - FISH_DIMENSION; fish.targetY = Math.random() * (tankHeight - FISH_DIMENSION); }
+            } else {
+                if (fish.targetX > fish.x && !fish.facingRight) {
+                    fish.facingRight = true;
+                } else if (fish.targetX < fish.x && fish.facingRight) {
+                    fish.facingRight = false;
+                }
+            }
+            applyFishPosition(fish);
+        }
+    }
+
     function formatPhoneNumber(phoneNumberString) {
         const cleaned = ('' + phoneNumberString).replace(/\D/g, '');
         const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
         if (match) {
             return '(' + match[1] + ') ' + match[2] + '-' + match[3];
         }
-        return phoneNumberString; // Return original if not a 10-digit number
+        return phoneNumberString;
     }
 
     function unformatPhoneNumber(formattedPhoneNumber) {
@@ -86,6 +328,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 contactTableBody.removeChild(contactTableBody.lastChild);
             }
 
+            if (fishTankContainer) {
+                const loadedContactIds = new Set(data.results ? data.results.map(c => c.id) : []);
+                for (const fishIdStr in activeFish) {
+                    const fishId = parseInt(fishIdStr, 10); 
+                    if (!loadedContactIds.has(fishId) && activeFish[fishIdStr] && !activeFish[fishIdStr].isExiting) {
+                         markFishForRemoval(fishIdStr);
+                    }
+                }
+            }
+
             if (data.error && data.error !== "") {
                 if (data.error === "No Records Found") {
                     showMessage('No contacts found.');
@@ -114,6 +366,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     deleteIcon.title = 'Delete Contact';
                     deleteIcon.addEventListener('click', () => handleDelete(contact));
                     actionsCell.appendChild(deleteIcon);
+
+                    if (fishTankContainer && contact.id) {
+                        addOrUpdateFish(contact); 
+                    }
                 });
                 showMessage('Contacts loaded.');
             } else {
@@ -175,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 newLastNameInput.value = '';
                 newPhoneInput.value = '';
                 newEmailInput.value = '';
-                loadContacts(); 
+                loadContacts();
             } else {
                 showMessage('Error adding contact: ' + data.error, true);
             }
@@ -189,13 +445,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!confirm(`Are you sure you want to delete ${contact.firstName} ${contact.lastName}?`)) {
             return;
         }
+        if (fishTankContainer && contact.id) {
+            markFishForRemoval(String(contact.id));
+        }
 
         const payload = {
             userId: userId,
             firstName: contact.firstName,
             lastName: contact.lastName,
             phone: contact.Phone, 
-            email: contact.Email  
+            email: contact.Email,
+            id: contact.id
         };
 
         try {
@@ -211,10 +471,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadContacts(); 
             } else {
                 showMessage('Error deleting contact: ' + data.error, true);
+                loadContacts(); 
             }
         } catch (error) {
             showMessage('Failed to delete contact: ' + error, true);
             console.error('Error deleting contact:', error);
+            loadContacts();
         }
     }
 
@@ -241,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleEdit(contact, rowElement) {
         if (editingContactRowElement && editingContactRowElement !== rowElement) {
-            cancelCurrentEdit(); // Cancel any other ongoing edit
+            cancelCurrentEdit();
         }
 
         editingContactRowElement = rowElement;
@@ -281,14 +543,14 @@ document.addEventListener('DOMContentLoaded', function() {
         tdActions.classList.add('action-icons');
 
         const confirmIcon = document.createElement('span');
-        confirmIcon.textContent = '✓'; // Check mark
+        confirmIcon.textContent = '✓';
         confirmIcon.title = 'Confirm Edit';
         confirmIcon.style.cursor = 'pointer';
         confirmIcon.addEventListener('click', () => handleConfirmUpdate());
         tdActions.appendChild(confirmIcon);
 
         const cancelIcon = document.createElement('span');
-        cancelIcon.textContent = '✗'; // X mark
+        cancelIcon.textContent = '✗';
         cancelIcon.title = 'Cancel Edit';
         cancelIcon.style.cursor = 'pointer';
         cancelIcon.addEventListener('click', () => cancelCurrentEdit());
@@ -296,19 +558,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const inputs = { firstNameInput: inputFirstName, lastNameInput: inputLastName, phoneInput: inputPhone, emailInput: inputEmail };
         
-        // Add event listeners to new inputs for live validation
         Object.values(inputs).forEach(input => {
             input.addEventListener('input', () => updateEditConfirmButtonState(confirmIcon, inputs));
         });
         
-        // Initial validation for the confirm button state
         updateEditConfirmButtonState(confirmIcon, inputs);
     }
 
     function cancelCurrentEdit() {
         editingContactRowElement = null;
         originalContactData = null;
-        loadContacts(); // Refresh the entire list to ensure all listeners and data are correct
+        loadContacts();
     }
 
     async function handleConfirmUpdate() {
@@ -378,19 +638,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Event listener for the search input
     if (searchContactsInput) {
         searchContactsInput.addEventListener('input', function() {
             const searchTerm = searchContactsInput.value.trim();
             if (searchTerm.length >= 2) {
                 loadContacts(searchTerm);
-            } else if (searchTerm.length === 0) { // Also reload all if search is cleared
+            } else if (searchTerm.length === 0) {
                 loadContacts('');
             }
-            // If less than 2 chars but not empty, do nothing, wait for more input
         });
     }
 
+    initFishTank();
     loadContacts();
     updateAddButtonState(); 
 }); 

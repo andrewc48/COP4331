@@ -51,6 +51,42 @@
             margin-top: 1em;
             font-weight: bold;
         }
+        /* Fish Tank Styles */
+        #fish-tank-container {
+            position: relative;
+            width: 100%;
+            height: 200px; /* Adjust as needed */
+            background-color: #87CEEB; /* Sky Blue */
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid #6495ED; /* Cornflower Blue border */
+            border-radius: 4px;
+        }
+
+        .fish-wrapper {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none; /* Prevent text selection */
+        }
+
+        .fish-wrapper svg {
+            width: 50px; /* Adjust as needed */
+            height: auto;
+            filter: drop-shadow(2px 2px 1px rgba(0,0,0,0.2)); /* Simple shadow for depth */
+        }
+
+        .fish-wrapper p {
+            margin: 0;
+            font-size: 10px;
+            color: black;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.75);
+            padding: 1px 4px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -92,6 +128,8 @@
         </table>
         <p id="contact_message"></p>
 
+        <!-- Fish Tank Easter Egg -->
+        <div id="fish-tank-container"></div>
     </div>
 
     <footer>
