@@ -23,9 +23,8 @@
     else
     {
             $stmt = $conn->prepare("DELETE FROM Contacts WHERE FirstName=? AND LastName=? AND Phone=? AND Email=? AND UserID=?");
-            $stmt->bind_param("sssss", $firstName, $lastName,$phone,$email,$userID);
+	    $stmt->bind_param("ssssi", $firstName, $lastName,$phone,$email,$userId);
             $stmt->execute();
-
             if($stmt->affected_rows > 0)
             {
                     returnWithError("");
