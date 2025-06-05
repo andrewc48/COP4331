@@ -4,6 +4,29 @@
 		<meta charset="utf-8">
 		<title>COP4331 - Register</title>
 		<link rel="stylesheet" href="css/style.css">
+		<style>
+			.requirement {
+				font-size: 0.9em;
+				margin-top: 0.3em;
+				display: block; /* Make each requirement take its own line */
+			}
+			.requirement .icon {
+				margin-right: 0.3em;
+				font-weight: bold;
+			}
+			.requirement.invalid .icon {
+				color: red;
+			}
+			.requirement.invalid {
+				color: red;
+			}
+			.requirement.valid .icon {
+				color: green;
+			}
+			.requirement.valid {
+				color: green;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -31,10 +54,15 @@
 			<div class="form-group">
 				<label for="username_input">Username:</label>
 				<input id="username_input" type="text" required>
+				<span id="username_req_length" class="requirement invalid"><span class="icon">✗</span>Minimum 6 characters</span>
+				<span id="username_req_charset" class="requirement invalid"><span class="icon">✗</span>Only letters, digits, -, or _</span>
 			</div>
 			<div class="form-group">
 				<label for="password_input">Password:</label>
 				<input id="password_input" type="password" required>
+				<span id="password_req_length" class="requirement invalid"><span class="icon">✗</span>Minimum 8 characters</span>
+				<span id="password_req_special" class="requirement invalid"><span class="icon">✗</span>At least 1 special character</span>
+				<span id="password_req_charset" class="requirement invalid"><span class="icon">✗</span>Only letters, digits, or any of !@#$^&*-=+</span>
 			</div>
 			<div class="form-group">
 				<input id="register_button" type="button" value="Register">

@@ -306,31 +306,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function cancelCurrentEdit() {
-        if (editingContactRowElement && originalContactData) {
-            editingContactRowElement.innerHTML = ''; 
-
-            editingContactRowElement.insertCell().textContent = originalContactData.firstName;
-            editingContactRowElement.insertCell().textContent = originalContactData.lastName;
-            editingContactRowElement.insertCell().textContent = formatPhoneNumber(originalContactData.Phone);
-            editingContactRowElement.insertCell().textContent = originalContactData.Email;
-
-            const actionsCell = editingContactRowElement.insertCell();
-            actionsCell.classList.add('action-icons');
-
-            const editIcon = document.createElement('span');
-            editIcon.textContent = '✎';
-            editIcon.title = 'Edit Contact';
-            editIcon.addEventListener('click', () => handleEdit(originalContactData, editingContactRowElement));
-            actionsCell.appendChild(editIcon);
-
-            const deleteIcon = document.createElement('span');
-            deleteIcon.textContent = '🗑️';
-            deleteIcon.title = 'Delete Contact';
-            deleteIcon.addEventListener('click', () => handleDelete(originalContactData));
-            actionsCell.appendChild(deleteIcon);
-        }
         editingContactRowElement = null;
         originalContactData = null;
+        loadContacts(); // Refresh the entire list to ensure all listeners and data are correct
     }
 
     async function handleConfirmUpdate() {
