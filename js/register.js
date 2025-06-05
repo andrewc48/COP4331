@@ -26,7 +26,7 @@ document.getElementById("register_button").addEventListener("click", function ()
             localStorage.setItem("firstName", data.firstName);
             localStorage.setItem("lastName", data.lastName);
             localStorage.setItem("username", username);
-            window.location.href = "home.html";
+            window.location.href = "contacts.html";
         } else {
             registerMessage.textContent = "Registration failed: " + data.error;
             console.log("Register failed:", data.error);

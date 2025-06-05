@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const newLastNameInput = document.getElementById('new_lastName');
     const newPhoneInput = document.getElementById('new_phone');
     const newEmailInput = document.getElementById('new_email');
+    const searchContactsInput = document.getElementById('search_contacts_input');
 
     const searchContactsUrl = 'http://cop4331-summer25-g19.org/LAMPAPI/SearchContacts.php';
     const addContactUrl = 'http://cop4331-summer25-g19.org/LAMPAPI/AddContact.php';
@@ -396,6 +397,19 @@ document.addEventListener('DOMContentLoaded', function() {
         newPhoneInput.addEventListener('input', function(e) {
             const x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
             e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    }
+
+    // Event listener for the search input
+    if (searchContactsInput) {
+        searchContactsInput.addEventListener('input', function() {
+            const searchTerm = searchContactsInput.value.trim();
+            if (searchTerm.length >= 2) {
+                loadContacts(searchTerm);
+            } else if (searchTerm.length === 0) { // Also reload all if search is cleared
+                loadContacts('');
+            }
+            // If less than 2 chars but not empty, do nothing, wait for more input
         });
     }
 

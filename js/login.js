@@ -22,7 +22,7 @@ document.getElementById("login_button").addEventListener("click", function () {
 			localStorage.setItem("firstName", data.firstName);
 			localStorage.setItem("lastName", data.lastName);
 			localStorage.setItem("username", username);
-			window.location.href = "home.html";
+			window.location.href = "contacts.html";
 		} else {
 			loginMessage.textContent = "Login failed: " + data.error;
 			console.log("Login failed:", data.error);

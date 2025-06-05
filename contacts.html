@@ -60,13 +60,15 @@
     </header>
 
     <nav>
-        <a href="home.html">Home</a>
         <a href="contacts.html" class="active">Contacts</a>
         <a href="#logout" id="logout_button">Logout</a> 
     </nav>
 
     <div class="container">
         <h2>Manage Contacts</h2>
+        <div class="search-container" style="margin-bottom: 1em;">
+            <input type="search" id="search_contacts_input" placeholder="Search by name..." style="width: 100%; padding: 0.5em; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+        </div>
         
         <table class="crud-table">
             <thead>
